@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dark Moon Blog — Little Anna Has An Idea</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--crimson:#8B0000;--crimson-mid:#B22222;--crimson-light:#DC143C;--gold:#C9A84C;--gold-light:#F2D27A;--gold-pale:#FFF3C4;--black:#04020A;--dark:#08030F;--text:#E8D5C0;--text-muted:#A08070;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--text);font-family:'Cormorant Garamond',serif;overflow-x:hidden;cursor:none;}
+    #cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 8px var(--gold);}
+    #cursor-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(220,20,60,.6);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+
+    .warning-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(100,0,0,.95);border-bottom:1px solid rgba(220,20,60,.5);padding:6px 24px;display:flex;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(8px);}
+    .warning-bar span{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,220,200,.9);}
+    .warn-badge{background:var(--crimson-light);color:#fff;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;padding:2px 8px;font-weight:700;}
+
+    nav{position:fixed;top:32px;left:0;right:0;z-index:100;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(4,2,10,.97);border-bottom:1px solid rgba(201,168,76,.1);backdrop-filter:blur(12px);}
+    .nav-logo{font-family:'Cinzel Decorative',serif;font-size:.85rem;color:var(--gold);text-decoration:none;filter:drop-shadow(0 0 8px rgba(201,168,76,.4));}
+    .nav-links{display:flex;gap:28px;list-style:none;}
+    .nav-links a{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--gold);}
+
+    /* PAGE HEADER */
+    .page-header{padding:160px 24px 80px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(139,0,0,.35) 0%,transparent 70%),linear-gradient(180deg,rgba(4,2,10,1) 0%,rgba(8,3,15,1) 100%);}
+    .page-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);}
+    .ph-label{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.42em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:12px;}
+    .ph-title{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light),var(--gold),var(--crimson-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 25px rgba(201,168,76,.4));margin-bottom:16px;}
+    .ph-desc{max-width:600px;margin:0 auto;font-size:1.1rem;font-style:italic;color:var(--text-muted);line-height:1.8;}
+    .orn{display:flex;align-items:center;gap:14px;justify-content:center;margin:16px 0;}
+    .orn-line{width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .orn-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 10px var(--gold);}
+    .orn-dot{width:3px;height:3px;background:var(--crimson-light);transform:rotate(45deg);}
+
+    /* MAIN LAYOUT */
+    main{max-width:1200px;margin:0 auto;padding:80px 24px 120px;display:grid;grid-template-columns:1fr 340px;gap:60px;align-items:start;}
+
+    /* BLOG POSTS */
+    .blog-feed{display:flex;flex-direction:column;gap:48px;}
+
+    .blog-post{border:1px solid rgba(201,168,76,.15);background:rgba(8,2,12,.7);position:relative;transition:all .3s;overflow:hidden;}
+    .blog-post::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--crimson-light),var(--gold),var(--crimson-light),transparent);opacity:0;transition:opacity .3s;}
+    .blog-post:hover{border-color:rgba(201,168,76,.3);box-shadow:0 8px 40px rgba(139,0,0,.2);}
+    .blog-post:hover::before{opacity:1;}
+
+    .post-category-bar{padding:10px 28px;background:rgba(139,0,0,.15);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:center;gap:12px;}
+    .post-cat{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson-light);}
+    .post-date{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.16em;color:var(--text-muted);margin-left:auto;}
+
+    .post-body{padding:36px 32px;}
+    .post-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.1rem,2.5vw,1.7rem);color:var(--gold);margin-bottom:16px;filter:drop-shadow(0 0 10px rgba(201,168,76,.25));line-height:1.3;}
+    .post-excerpt{font-size:1.05rem;line-height:1.9;color:var(--text);opacity:.88;margin-bottom:24px;}
+    .post-excerpt em{color:var(--gold-pale);font-style:italic;}
+    .post-read-more{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.3);padding-bottom:2px;transition:all .2s;}
+    .post-read-more:hover{color:var(--gold-light);border-color:var(--gold-light);}
+
+    /* LORE CARD */
+    .lore-card{border-left:2px solid var(--crimson-light);padding:20px 24px;background:rgba(139,0,0,.08);margin:24px 0;}
+    .lore-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:8px;}
+    .lore-text{font-size:1rem;font-style:italic;line-height:1.8;color:var(--text);opacity:.85;}
+
+    /* PLAYLIST CARD inside post */
+    .playlist-embed{background:rgba(4,1,8,.8);border:1px solid rgba(201,168,76,.15);padding:20px 24px;margin:24px 0;}
+    .playlist-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    .playlist-title::before{content:'♪';font-size:1rem;color:var(--crimson-light);}
+    .track{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);}
+    .track:last-child{border-bottom:none;}
+    .track-num{font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-muted);width:16px;flex-shrink:0;}
+    .track-info{flex:1;}
+    .track-name{font-family:'Cormorant Garamond',serif;font-size:.98rem;color:var(--text);margin-bottom:2px;}
+    .track-artist{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);}
+    .track-vibe{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--crimson-light);margin-left:auto;flex-shrink:0;}
+
+    /* QUIZ CARD */
+    .quiz-card{background:rgba(8,2,12,.85);border:1px solid rgba(201,168,76,.2);padding:32px 28px;position:relative;margin-top:24px;}
+    .quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .quiz-title{font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--gold);margin-bottom:16px;}
+    .quiz-question{font-size:1.05rem;font-weight:500;color:var(--text);margin-bottom:20px;line-height:1.7;}
+    .quiz-options{display:flex;flex-direction:column;gap:10px;}
+    .quiz-option{
+      padding:12px 16px;border:1px solid rgba(201,168,76,.2);
+      font-family:'Cormorant Garamond',serif;font-size:.98rem;color:var(--text);
+      background:rgba(4,1,8,.6);cursor:none;transition:all .25s;
+      display:flex;align-items:center;gap:12px;
+    }
+    .quiz-option:hover{border-color:rgba(201,168,76,.5);background:rgba(139,0,0,.15);color:var(--gold-pale);}
+    .quiz-option .opt-letter{font-family:'Cinzel',serif;font-size:.7rem;color:var(--crimson-light);width:18px;flex-shrink:0;}
+
+    /* SIDEBAR */
+    .sidebar{display:flex;flex-direction:column;gap:32px;position:sticky;top:100px;}
+
+    .sidebar-widget{border:1px solid rgba(201,168,76,.15);background:rgba(8,2,12,.7);padding:28px 24px;position:relative;}
+    .sidebar-widget::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .widget-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:.9;}
+
+    /* categories */
+    .cat-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+    .cat-list li a{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:10px;transition:color .2s;}
+    .cat-list li a:hover{color:var(--gold);}
+    .cat-list li a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--crimson-light);flex-shrink:0;}
+    .cat-count{font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-muted);margin-left:auto;}
+
+    /* recent posts sidebar */
+    .recent-post{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(201,168,76,.08);}
+    .recent-post:last-child{border-bottom:none;}
+    .rp-title{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;color:var(--gold-pale);margin-bottom:4px;line-height:1.4;}
+    .rp-cat{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson-light);}
+
+    /* moon phase widget */
+    .moon-phases{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center;}
+    .moon-phase{display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .moon-emoji{font-size:1.6rem;filter:drop-shadow(0 0 6px rgba(201,168,76,.3));}
+    .moon-name{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);}
+
+    .sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.18),transparent);margin:48px 0;}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .85s ease,transform .85s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    footer{border-top:1px solid rgba(201,168,76,.1);padding:40px 24px;text-align:center;background:rgba(2,1,6,1);}
+    .f-logo{font-family:'Cinzel Decorative',serif;font-size:.95rem;color:var(--gold);margin-bottom:8px;opacity:.65;}
+    .f-copy{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--text-muted);opacity:.4;}
+    .f-nav{display:flex;gap:24px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+    .f-nav a{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .f-nav a:hover{color:var(--gold);}
+
+    @media(max-width:960px){main{grid-template-columns:1fr;}.sidebar{position:static;}}
+    @media(max-width:768px){nav{padding:16px 20px;top:30px;}.nav-links{gap:14px;}.nav-links a{font-size:.58rem;}.post-body{padding:24px 20px;}}
+    @media(max-width:480px){.nav-links{display:none;}.moon-phases{grid-template-columns:repeat(4,1fr);}}
+    .mood-btn{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;background:rgba(4,1,8,.6);color:var(--text-muted);border:1px solid rgba(201,168,76,.15);cursor:pointer;transition:all .25s;text-align:left;}
+    .mood-btn:hover{border-color:var(--crimson-light);color:var(--gold-pale);background:rgba(139,0,0,.18);}
+    .mood-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1);}
+  </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div class="warning-bar">
+  <span class="warn-badge">18+</span>
+  <span>Dark Romance · Werewolf Fantasy · Mature Themes Throughout</span>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Little Anna</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="books.html">Books</a></li>
+    <li><a href="tropes.html">Tropes & Triggers</a></li>
+    <li><a href="blog.html" class="active">Dark Moon Blog</a></li>
+    <li><a href="pack.html">Join the Pack</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <p class="ph-label">Lore · Playlists · Characters · Chaos</p>
+  <h1 class="ph-title">Dark Moon Blog</h1>
+  <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-gem"></div><div class="orn-dot"></div><div class="orn-line"></div></div>
+  <p class="ph-desc">Behind the books, inside the characters, and everything in between. Welcome to the part where I talk too much.</p>
+</div>
+
+<main>
+  <!-- BLOG FEED -->
+  <div class="blog-feed">
+
+    <!-- POST 1 — CHARACTER LORE -->
+    <article class="blog-post reveal">
+      <div class="post-category-bar">
+        <span class="post-cat">🐺 Character Lore</span>
+        <span class="post-date">Featured</span>
+      </div>
+      <div class="post-body">
+        <h2 class="post-title">Who Is the Mad Dog Alpha — And Why Did She Choose Him?</h2>
+        <p class="post-excerpt">Everyone in the pack calls him the Mad Dog. They say it like it's an insult. Like it explains why he has nothing — no territory, no standing, no clean name. What they don't say is why he became that way. What was taken from him. Who did the taking.</p>
+        <div class="lore-card">
+          <p class="lore-label">From the Author</p>
+          <p class="lore-text">"He was always going to be the one she chose. Not because he was the strongest — he wasn't, not yet. But because he was the only one in that room who looked at her like she was a person and not a prize. She noticed. She always notices the small things."</p>
+        </div>
+        <p class="post-excerpt">The Warrior Luna didn't pick the Mad Dog out of desperation. She picked him out of clarity. She looked at three powerful alphas and saw exactly what they would do with her power. Then she looked at him — disgraced, underestimated, burning — and she saw something else entirely. <em>She saw a match.</em></p>
+        <a href="#" class="post-read-more">Read Full Lore Post →</a>
+      </div>
+    </article>
+
+    <!-- POST 2 — PLAYLIST -->
+    <article class="blog-post reveal">
+      <div class="post-category-bar">
+        <span class="post-cat">🎵 Reading Playlist</span>
+        <span class="post-date">Now Playing</span>
+      </div>
+      <div class="post-body">
+        <h2 class="post-title">The His Troublemaker Luna Playlist — Songs for an Omega Who Was Never Going to Stay Quiet</h2>
+        <p class="post-excerpt">Every book I write has a soundtrack in my head while I'm writing it. His Troublemaker Luna sounded like this — the tension of waiting, the chaos of her, the specific kind of quiet that happens right before everything explodes.</p>
+        <div class="playlist-embed">
+          <p class="playlist-title">His Troublemaker Luna — Official Reading Playlist</p>
+          <div class="track"><span class="track-num">01</span><div class="track-info"><p class="track-name">bad guy</p><p class="track-artist">Billie Eilish</p></div><span class="track-vibe">Her Energy</span></div>
+          <div class="track"><span class="track-num">02</span><div class="track-info"><p class="track-name">Toxic</p><p class="track-artist">2WEI (Epic Version)</p></div><span class="track-vibe">The Bond</span></div>
+          <div class="track"><span class="track-num">03</span><div class="track-info"><p class="track-name">lovely</p><p class="track-artist">Billie Eilish & Khalid</p></div><span class="track-vibe">Angst Arc</span></div>
+          <div class="track"><span class="track-num">04</span><div class="track-info"><p class="track-name">Moth To A Flame</p><p class="track-artist">Swedish House Mafia, The Weeknd</p></div><span class="track-vibe">His Obsession</span></div>
+          <div class="track"><span class="track-num">05</span><div class="track-info"><p class="track-name">Howl</p><p class="track-artist">Florence + The Machine</p></div><span class="track-vibe">The Claiming</span></div>
+          <div class="track"><span class="track-num">06</span><div class="track-info"><p class="track-name">you should see me in a crown</p><p class="track-artist">Billie Eilish</p></div><span class="track-vibe">Hybrid Reveal</span></div>
+          <div class="track"><span class="track-num">07</span><div class="track-info"><p class="track-name">Dark Red</p><p class="track-artist">Steve Lacy</p></div><span class="track-vibe">Finally His</span></div>
+        </div>
+        <a href="#" class="post-read-more">See Full Playlist →</a>
+      </div>
+    </article>
+
+    <!-- POST 3 — AUTHOR NOTE -->
+    <article class="blog-post reveal">
+      <div class="post-category-bar">
+        <span class="post-cat">✍ Author Notes</span>
+        <span class="post-date">Writing Life</span>
+      </div>
+      <div class="post-body">
+        <h2 class="post-title">Why I Keep Writing the Omega Who Refuses to Break</h2>
+        <p class="post-excerpt">People ask me why almost every heroine I write starts at the bottom. The omega. The girl the pack ignores. The one who gets the leftover everything — leftover attention, leftover respect, leftover love.</p>
+        <p class="post-excerpt">The honest answer is that those are the stories I want to read. The ones where the person everyone counted out ends up being the most powerful person in the room — not because she was secretly strong all along, but because <em>she decided to be</em>. That decision. That moment. That's what I'm always writing toward.</p>
+        <div class="lore-card">
+          <p class="lore-label">The Real Reason</p>
+          <p class="lore-text">"I want the reader to feel what it's like to be underestimated and then watch that girl take everything back. Not just the alpha. Everything. Her dignity. Her name. Her power. I want the reader to feel that like it's happening to them."</p>
+        </div>
+        <a href="#" class="post-read-more">Read Full Post →</a>
+      </div>
+    </article>
+
+    <!-- POST 4 — QUIZ -->
+    <article class="blog-post reveal">
+      <div class="post-category-bar">
+        <span class="post-cat">🐾 Pack Quiz</span>
+        <span class="post-date">Just for Fun</span>
+      </div>
+      <div class="post-body">
+        <h2 class="post-title">How Feral Is Your Alpha? A Quiz for the Thoroughly Unhinged Reader</h2>
+        <p class="post-excerpt">You've read the books. You know the type. But which specific flavor of unhinged possessive alpha are you actually rooting for? Let's find out.</p>
+        <div class="quiz-card">
+          <p class="quiz-title">Question 1 of 5</p>
+          <p class="quiz-question">Your alpha finds out someone looked at you for two seconds too long at the market. He:</p>
+          <div class="quiz-options">
+            <div class="quiz-option"><span class="opt-letter">A</span>Makes eye contact with the man and says nothing. The man leaves the city by morning.</div>
+            <div class="quiz-option"><span class="opt-letter">B</span>Puts his hand on your waist and smiles. It is not a friendly smile.</div>
+            <div class="quiz-option"><span class="opt-letter">C</span>Asks you later, very quietly, who he was. His voice is very calm. You are not calm.</div>
+            <div class="quiz-option"><span class="opt-letter">D</span>Bans the market. You now have a private market. This is not an improvement.</div>
+          </div>
+        </div>
+        <br/>
+        <a href="#" class="post-read-more">Take the Full Quiz →</a>
+      </div>
+    </article>
+
+    <!-- POST 5 — WORLD LORE -->
+    <article class="blog-post reveal">
+      <div class="post-category-bar">
+        <span class="post-cat">🌕 World Lore</span>
+        <span class="post-date">The Universe</span>
+      </div>
+      <div class="post-body">
+        <h2 class="post-title">The Hybrid Luna — What It Means and Why the Pack Is Terrified</h2>
+        <p class="post-excerpt">In the world of His Troublemaker Luna, a hybrid Luna is not just rare. She is a rupture in the natural order. The pack hierarchy was built on the idea that wolves are wolves and humans are humans and the lines between them are fixed. A hybrid Luna breaks every single one of those lines.</p>
+        <div class="lore-card">
+          <p class="lore-label">World Lore</p>
+          <p class="lore-text">"A hybrid Luna carries both wolf and something older in her blood. She doesn't just shift — she absorbs. She doesn't just bond — she rewrites. The alpha who claims her doesn't gain a mate. He gains a mirror. Whatever he is, she reflects it back twice as bright, twice as sharp, twice as dangerous."</p>
+        </div>
+        <p class="post-excerpt">This is why they feared her before they even knew what she was. The pack sensed it. The alpha knew it the first time he looked at her. <em>She was already more powerful than anyone in that pack, including him. She just hadn't found out yet.</em></p>
+        <a href="#" class="post-read-more">Read Full Lore Entry →</a>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- CATEGORIES -->
+    <div class="sidebar-widget reveal">
+      <p class="widget-title">Browse By</p>
+      <ul class="cat-list">
+        <li><a href="#">Character Lore <span class="cat-count">5</span></a></li>
+        <li><a href="#">Reading Playlists <span class="cat-count">4</span></a></li>
+        <li><a href="#">Author Notes <span class="cat-count">8</span></a></li>
+        <li><a href="#">World Lore <span class="cat-count">6</span></a></li>
+        <li><a href="#">Pack Quizzes <span class="cat-count">3</span></a></li>
+        <li><a href="#">Writing Updates <span class="cat-count">10</span></a></li>
+      </ul>
+    </div>
+
+    <!-- MOON PHASES -->
+    <div class="sidebar-widget reveal">
+      <p class="widget-title">Moon Phases</p>
+      <div class="moon-phases">
+        <div class="moon-phase"><span class="moon-emoji">🌑</span><span class="moon-name">New</span></div>
+        <div class="moon-phase"><span class="moon-emoji">🌒</span><span class="moon-name">Waxing</span></div>
+        <div class="moon-phase"><span class="moon-emoji">🌕</span><span class="moon-name">Full</span></div>
+        <div class="moon-phase"><span class="moon-emoji">🌘</span><span class="moon-name">Waning</span></div>
+      </div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(201,168,76,.1);">
+        <p style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Current Phase</p>
+        <p style="font-size:1rem;font-style:italic;color:var(--text);opacity:.8;">The full moon is the claiming moon. Everything that happens under it is permanent. The wolves know this. They choose it anyway.</p>
+      </div>
+    </div>
+
+    <!-- RECENT POSTS -->
+    <div class="sidebar-widget reveal">
+      <p class="widget-title">Recent Posts</p>
+      <div class="recent-post">
+        <div><p class="rp-title">The Omega Who Became a Hurricane</p><p class="rp-cat">Character Lore</p></div>
+      </div>
+      <div class="recent-post">
+        <div><p class="rp-title">Why the Mad Dog Was Always the Right Choice</p><p class="rp-cat">Author Notes</p></div>
+      </div>
+      <div class="recent-post">
+        <div><p class="rp-title">Warrior Luna Playlist — Battle Hymns & Heartbreak</p><p class="rp-cat">Playlists</p></div>
+      </div>
+      <div class="recent-post">
+        <div><p class="rp-title">Pack Hierarchy Explained — Why Rank Matters</p><p class="rp-cat">World Lore</p></div>
+      </div>
+    </div>
+
+    <!-- JOIN PACK -->
+    <div class="sidebar-widget reveal" style="background:rgba(139,0,0,.12);border-color:rgba(220,20,60,.25);">
+      <p class="widget-title" style="color:var(--crimson-light);">Join the Pack</p>
+      <p style="font-size:.98rem;line-height:1.75;color:var(--text);opacity:.85;margin-bottom:20px;">Get new releases, bonus scenes, and early chapters straight to your inbox.</p>
+      <a href="pack.html" style="display:block;text-align:center;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;padding:12px 20px;background:var(--crimson);color:var(--gold-pale);border:1px solid var(--crimson-light);text-decoration:none;transition:all .3s;">I Want to Be Claimed</a>
+    </div>
+
+    <!-- FORBIDDEN QUOTE OF THE DAY -->
+    <div class="sidebar-widget reveal" id="quote-widget">
+      <p class="widget-title">🖤 Forbidden Quote</p>
+      <p style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:16px;">Today's Dark Whisper</p>
+      <blockquote id="daily-quote" style="font-size:1.05rem;line-height:1.8;color:var(--text);opacity:.92;border-left:2px solid var(--crimson-light);padding-left:16px;font-style:italic;"></blockquote>
+      <p id="quote-source" style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;color:var(--gold);opacity:.7;margin-top:12px;text-align:right;"></p>
+    </div>
+
+    <!-- MOOD READER -->
+    <div class="sidebar-widget reveal" id="mood-widget">
+      <p class="widget-title">🌙 Mood Reader</p>
+      <p style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;">What do you need tonight?</p>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="mood-btns">
+        <button class="mood-btn" data-mood="chaos">I want chaos and teeth</button>
+        <button class="mood-btn" data-mood="forbidden">Give me something forbidden</button>
+        <button class="mood-btn" data-mood="revenge">I need a revenge arc</button>
+        <button class="mood-btn" data-mood="broken">Break me then fix me</button>
+        <button class="mood-btn" data-mood="obsession">I want to be obsessed over</button>
+      </div>
+      <div id="mood-result" style="display:none;margin-top:18px;padding:16px;border:1px solid rgba(201,168,76,.25);background:rgba(4,1,8,.6);">
+        <p style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:8px;">Your book tonight is</p>
+        <p id="mood-book-title" style="font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold);margin-bottom:8px;"></p>
+        <p id="mood-book-reason" style="font-size:.95rem;line-height:1.7;color:var(--text);opacity:.85;margin-bottom:12px;"></p>
+        <a id="mood-book-link" href="#" class="read-btn" style="font-size:.6rem;padding:9px 18px;">Read Now</a>
+        <button onclick="document.getElementById('mood-result').style.display='none';document.getElementById('mood-btns').style.display='flex';" style="display:block;margin-top:10px;background:none;border:none;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);cursor:pointer;">← Pick Again</button>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<footer>
+  <div class="f-nav">
+    <a href="index.html">Home</a>
+    <a href="books.html">Books</a>
+    <a href="tropes.html">Tropes & Triggers</a>
+    <a href="blog.html">Dark Moon Blog</a>
+    <a href="pack.html">Join the Pack</a>
+  </div>
+  <div class="orn" style="margin-bottom:20px;opacity:.35"><div class="orn-line"></div><div class="orn-gem"></div><div class="orn-line"></div></div>
+  <p class="f-logo">Little Anna Has An Idea</p>
+  <p class="f-copy">© 2025 · All Rights Reserved · 18+ Only · Dark Romance Werewolf Fantasy</p>
+</footer>
+
+<script>
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button,.quiz-option').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.2)';cur.style.background='var(--crimson-light)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';cur.style.background='var(--gold)';});
+});
+// quiz option select
+document.querySelectorAll('.quiz-option').forEach(opt=>{
+  opt.addEventListener('click',()=>{
+    document.querySelectorAll('.quiz-option').forEach(o=>o.style.borderColor='');
+    opt.style.borderColor='var(--gold)';
+    opt.style.background='rgba(139,0,0,.25)';
+    opt.style.color='var(--gold-pale)';
+  });
+});
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+</script>
+
+<script>
+// FORBIDDEN QUOTE OF THE DAY
+const quotes = [
+  { text: "Fate may have picked the thread. But I decide how it knots… and who it strangles.", source: "— Little Anna Has An Idea" },
+  { text: "She did not come home to be tamed. She came home to burn it all down.", source: "— The Warrior Luna" },
+  { text: "He's never lost control. She's never belonged to anyone. One of them is lying.", source: "— His Troublemaker Luna" },
+  { text: "I'm not asking. I'm taking.", source: "— Claimed by My Brother's Best Friend" },
+  { text: "Rejected. Framed. Thrown in a dungeon. She lived — for herself.", source: "— His Substitute Luna" },
+  { text: "I only know his voice. And I don't know it yet — but that voice belongs to my boss.", source: "— Hotline Pleasure" },
+  { text: "When the alpha fails you, his beta will gladly pick up the pieces — and break you all over again.", source: "— Your Beta Will Do" },
+  { text: "Tonight, I need them. I need their hands on me. I'm not a good girl anymore.", source: "— Taming the Alpha's Daughter" },
+  { text: "She rejected the boy he was. She has no idea what the man he became is capable of.", source: "— Mafia's Sweetheart" },
+  { text: "The mate bond doesn't care. It doesn't care about want. It only knows claim.", source: "— Little Anna Has An Idea" },
+  { text: "He watched her laugh and looked away. He had a rule about that. He was not allowed to watch her laugh.", source: "— His Troublemaker Luna" },
+  { text: "She'll never forgive me. She'll never accept a man like me. I'm not asking for forgiveness.", source: "— Claimed by My Brother's Best Friend" },
+];
+const dayIndex = Math.floor(Date.now() / 86400000) % quotes.length;
+const q = quotes[dayIndex];
+document.getElementById('daily-quote').textContent = q.text;
+document.getElementById('quote-source').textContent = q.source;
+
+// MOOD READER
+const moodMap = {
+  chaos: {
+    title: "His Troublemaker Luna",
+    reason: "Jessica refuses to kneel. Gray refuses to lose. Two people who will burn the world down before they admit the truth. This is your chaos.",
+    link: "https://api.novel-oasis.com/middle/share?user_id=1091055&book_id=52928&platform=15&sign=4dc9656be474bdfbeebee7e370513faf"
+  },
+  forbidden: {
+    title: "Claimed by My Brother's Best Friend",
+    reason: "Every line crossed. Every rule broken. A man who waited years and is done pretending he's good. This is your forbidden.",
+    link: "https://api.novel-oasis.com/middle/share?user_id=1091055&book_id=55965&platform=15&sign=6e2d6395761169200fb8319f3160060c"
+  },
+  revenge: {
+    title: "Taming the Alpha's Daughter",
+    reason: "He rejected her in front of everyone. She walked straight into the darkest place she could find. This is your revenge arc.",
+    link: "#"
+  },
+  broken: {
+    title: "His Substitute Luna",
+    reason: "Rejected. Framed. Destroyed. And then — rebuilt into something that terrifies everyone who hurt her. This is your break and rebuild.",
+    link: "#"
+  },
+  obsession: {
+    title: "Hotline Pleasure",
+    reason: "A man who doesn't even know she knows who he is — but she's all he thinks about. This is your obsession.",
+    link: "#"
+  }
+};
+
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mood = btn.dataset.mood;
+    const result = moodMap[mood];
+    document.getElementById('mood-book-title').textContent = result.title;
+    document.getElementById('mood-book-reason').textContent = result.reason;
+    document.getElementById('mood-book-link').href = result.link;
+    document.getElementById('mood-btns').style.display = 'none';
+    document.getElementById('mood-result').style.display = 'block';
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  });
+});
+</script>
+</body>
+</html>

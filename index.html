@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Little Anna Has An Idea — Dark Romance Werewolf Fantasy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --crimson:#8B0000; --crimson-mid:#B22222; --crimson-light:#DC143C;
+      --gold:#C9A84C; --gold-light:#F2D27A; --gold-pale:#FFF3C4;
+      --black:#04020A; --dark:#08030F; --dark-mid:#140810;
+      --text:#E8D5C0; --text-muted:#A08070;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--text);font-family:'Cormorant Garamond',serif;overflow-x:hidden;cursor:none;font-size:1.15rem;font-style:normal;font-weight:400;-webkit-font-smoothing:antialiased;letter-spacing:.02em;}
+    p, blockquote, li{font-style:normal !important;}
+
+    /* CURSOR */
+    #cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s;mix-blend-mode:screen;box-shadow:0 0 8px var(--gold);}
+    #cursor-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(220,20,60,.6);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+
+    /* 18+ WARNING BAR */
+    .warning-bar{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      background:rgba(100,0,0,.95);
+      border-bottom:1px solid rgba(220,20,60,.5);
+      padding:6px 24px;
+      display:flex;align-items:center;justify-content:center;gap:16px;
+      backdrop-filter:blur(8px);
+    }
+    .warning-bar span{
+      font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.18em;
+      text-transform:uppercase;color:rgba(255,220,200,.9);
+    }
+    .warning-bar .warn-badge{
+      background:var(--crimson-light);color:#fff;
+      font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;
+      padding:2px 8px;font-weight:700;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;top:32px;left:0;right:0;z-index:100;
+      padding:16px 48px;display:flex;align-items:center;justify-content:space-between;
+      background:linear-gradient(180deg,rgba(4,2,10,.95) 0%,transparent 100%);
+      backdrop-filter:blur(12px);transition:background .3s;
+    }
+    nav.scrolled{background:rgba(4,2,10,.98);border-bottom:1px solid rgba(201,168,76,.1);}
+    .nav-logo{font-family:'Cinzel Decorative',serif;font-size:.85rem;color:var(--gold);text-decoration:none;filter:drop-shadow(0 0 8px rgba(201,168,76,.4));}
+    .nav-links{display:flex;gap:28px;list-style:none;}
+    .nav-links a{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .nav-links a:hover{color:var(--gold);}
+    .nav-links a.active{color:var(--gold);}
+
+    /* ══ HERO ══ */
+    .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;z-index:1;padding-top:80px;}
+
+    .sky{position:absolute;inset:0;background:radial-gradient(ellipse 120% 100% at 50% -5%,#1A0A1E 0%,#0D0518 25%,#060210 55%,#030108 80%,#020106 100%);}
+    #stars{position:absolute;inset:0;z-index:1;pointer-events:none;}
+    #embers{position:absolute;inset:0;z-index:4;pointer-events:none;}
+
+    /* BLOOD MOON */
+    .moon-container{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:420px;height:420px;z-index:2;}
+    .moon-haze{position:absolute;inset:-80px;border-radius:50%;background:radial-gradient(circle,rgba(180,10,10,.22) 0%,rgba(140,5,5,.15) 30%,rgba(80,0,0,.08) 55%,transparent 75%);animation:hazeBreath 6s ease-in-out infinite;}
+    .moon-disc{position:absolute;inset:30px;border-radius:50%;background:radial-gradient(circle at 42% 38%,rgba(255,120,80,.55) 0%,rgba(220,40,20,.50) 25%,rgba(180,10,5,.55) 50%,rgba(120,0,0,.65) 72%,rgba(60,0,0,.80) 88%,rgba(20,0,0,.90) 100%);box-shadow:0 0 30px 8px rgba(200,20,10,.55),0 0 70px 20px rgba(160,10,5,.4),0 0 160px 50px rgba(120,5,0,.25),0 0 300px 80px rgba(80,0,0,.12),inset 0 0 25px rgba(255,160,80,.08),inset 0 0 60px rgba(180,0,0,.2);animation:moonBreath 5s ease-in-out infinite;}
+    .moon-disc::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 28% 32%,rgba(0,0,0,.25) 0%,transparent 12%),radial-gradient(circle at 62% 20%,rgba(0,0,0,.18) 0%,transparent 8%),radial-gradient(circle at 72% 55%,rgba(0,0,0,.15) 0%,transparent 10%);}
+    .moon-halo{position:absolute;top:-90px;left:50%;transform:translateX(-50%);width:460px;height:460px;border-radius:50%;border:1px solid rgba(201,168,76,.18);animation:moonBreath 5s ease-in-out infinite reverse;z-index:1;}
+    @keyframes moonBreath{0%,100%{opacity:.9;transform:scale(1);}50%{opacity:1;transform:scale(1.025);}}
+    @keyframes hazeBreath{0%,100%{opacity:.8;transform:scale(1);}50%{opacity:1;transform:scale(1.06);}}
+
+    .moon-beam{position:absolute;top:100px;left:50%;transform:translateX(-50%);width:300px;height:100vh;background:linear-gradient(180deg,rgba(180,20,10,.18) 0%,rgba(140,10,5,.10) 20%,rgba(80,0,0,.05) 50%,transparent 100%);clip-path:polygon(30% 0%,70% 0%,100% 100%,0% 100%);z-index:2;pointer-events:none;}
+
+    /* FOREST */
+    .forest-svg{position:absolute;bottom:0;left:0;right:0;height:65%;z-index:3;pointer-events:none;}
+
+    /* FLOWERS */
+    .mist-flowers-left{position:absolute;bottom:60px;left:2%;width:min(260px,28vw);z-index:5;filter:drop-shadow(0 0 18px rgba(255,160,40,.35));animation:flowerSway 8s ease-in-out infinite;transform-origin:bottom center;}
+    .mist-flowers-right{position:absolute;bottom:60px;right:2%;width:min(240px,26vw);z-index:5;filter:drop-shadow(0 0 16px rgba(255,150,30,.3));animation:flowerSway 10s ease-in-out infinite reverse;transform-origin:bottom center;}
+    @keyframes flowerSway{0%,100%{transform:rotate(0deg);}50%{transform:rotate(2.5deg);}}
+
+    /* MIST */
+    .mist-1{position:absolute;bottom:0;left:-10%;right:-10%;height:220px;background:radial-gradient(ellipse 100% 100% at 50% 100%,rgba(60,5,10,.95) 0%,rgba(30,2,6,.7) 40%,transparent 75%);z-index:6;filter:blur(8px);}
+    .mist-2{position:absolute;bottom:60px;left:-20%;right:-20%;height:180px;background:radial-gradient(ellipse 80% 80% at 40% 100%,rgba(40,5,8,.6) 0%,transparent 70%),radial-gradient(ellipse 60% 60% at 70% 100%,rgba(50,4,8,.5) 0%,transparent 70%);z-index:5;filter:blur(14px);animation:mistDrift 12s ease-in-out infinite;}
+    @keyframes mistDrift{0%,100%{transform:translateX(0);opacity:.9;}50%{transform:translateX(2%);opacity:1;}}
+
+    /* HERO CONTENT */
+    .hero-content{position:relative;z-index:10;text-align:center;padding:52px 60px;max-width:700px;background:rgba(4,1,8,.6);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.15);box-shadow:0 0 80px rgba(120,0,0,.2);animation:fadeUp 1.6s ease forwards;opacity:0;}
+    .hero-content::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .hero-content::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+
+    .hero-eyebrow{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;opacity:.9;}
+
+    .orn{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0;}
+    .orn-line{width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .orn-gem{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 10px var(--gold);}
+    .orn-dot{width:3px;height:3px;background:var(--crimson-light);transform:rotate(45deg);}
+
+    /* BIG HEADLINE */
+    .hero-headline{
+      font-family:'Cinzel',serif;
+      font-size:clamp(1.5rem,4vw,3rem);
+      font-weight:700;line-height:1.2;
+      background:linear-gradient(160deg,#FFFDE0 0%,var(--gold-light) 30%,var(--gold) 55%,#E84040 80%,var(--gold-light) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 25px rgba(201,168,76,.55));
+      margin-bottom:8px;
+      letter-spacing:.04em;
+    }
+    .hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.95rem,1.8vw,1.1rem);color:var(--text-muted);letter-spacing:.02em;margin-bottom:20px;font-weight:400;}
+    .hero-desc{max-width:500px;margin:0 auto;font-size:1.15rem;line-height:1.9;color:var(--text);opacity:.9;font-style:normal;font-weight:400;}
+
+    .hero-cta{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+    .btn-p{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:13px 22px;background:linear-gradient(135deg,var(--crimson),#A00000);color:var(--gold-pale);border:1px solid rgba(220,20,60,.6);text-decoration:none;position:relative;overflow:hidden;transition:all .3s;box-shadow:0 4px 24px rgba(139,0,0,.55);white-space:nowrap;}
+    .btn-p::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--crimson-light));opacity:0;transition:opacity .3s;}
+    .btn-p:hover::before{opacity:1;}
+    .btn-p:hover{color:var(--black);box-shadow:0 6px 36px rgba(201,168,76,.6);}
+    .btn-p span{position:relative;z-index:1;}
+    .btn-g{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:13px 22px;background:rgba(4,1,8,.5);color:var(--gold);border:1px solid rgba(201,168,76,.4);text-decoration:none;transition:all .3s;white-space:nowrap;}
+    .btn-g:hover{background:rgba(201,168,76,.1);border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,.2);}
+
+    .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5;animation:bob 2.2s ease-in-out infinite;z-index:10;}
+    .scroll-hint span{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);}
+    .scroll-line{width:1px;height:36px;background:linear-gradient(180deg,var(--gold),transparent);}
+    @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(9px);}}
+
+    /* ══ SHARED SECTION ══ */
+    section{position:relative;z-index:3;padding:100px 24px;background:linear-gradient(180deg,rgba(4,2,10,.97) 0%,rgba(8,3,15,.95) 100%);}
+    section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent);}
+    .sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.22),transparent);position:relative;z-index:3;}
+
+    .sec-label{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.42em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:12px;}
+    .sec-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(201,168,76,.35));}
+    .sec-head{text-align:center;margin-bottom:64px;}
+    .orn2{display:flex;align-items:center;gap:14px;justify-content:center;margin:10px 0;}
+    .orn2-line{width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .orn2-gem{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);}
+
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .85s ease,transform .85s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    /* CINEMATIC MOON PHASE */
+    .moon-phase-section{position:relative;padding:100px 24px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--black) 0%,rgba(6,1,14,1) 40%,rgba(6,1,14,1) 60%,var(--black) 100%);}
+    #wolf-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    .moon-phase-inner{position:relative;z-index:2;text-align:center;max-width:600px;margin:0 auto;}
+    .big-moon-display{position:relative;display:inline-block;margin:16px auto 0;}
+    .big-moon-emoji{font-size:clamp(5rem,14vw,9rem);line-height:1;filter:drop-shadow(0 0 40px rgba(201,168,76,.5));animation:moonPulse 4s ease-in-out infinite;}
+    .big-moon-glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.18) 0%,rgba(139,0,0,.08) 50%,transparent 75%);animation:moonPulse 4s ease-in-out infinite;pointer-events:none;}
+    @keyframes moonPulse{0%,100%{opacity:.8;transform:scale(1);}50%{opacity:1;transform:scale(1.04);}}
+    .big-moon-name{font-family:'Cinzel',serif;font-size:clamp(1.1rem,3vw,1.8rem);font-weight:700;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;margin:20px 0 10px;filter:drop-shadow(0 0 12px rgba(201,168,76,.4));}
+    .big-moon-lore{font-size:1.1rem;line-height:1.85;color:var(--text);opacity:.82;max-width:460px;margin:0 auto 32px;font-style:italic;}
+    .moon-phases-row{display:flex;gap:28px;justify-content:center;margin-top:32px;flex-wrap:wrap;}
+    .mph{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.45;transition:all .3s;cursor:default;}
+    .mph.active{opacity:1;}
+    .mph-emoji{font-size:2.2rem;filter:drop-shadow(0 0 10px rgba(201,168,76,.3));}
+    .mph.active .mph-emoji{filter:drop-shadow(0 0 18px rgba(201,168,76,.7));}
+    .mph-name{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);}
+    .mph.active .mph-name{color:var(--gold);}
+
+    /* FLOATING COVERS */
+    .float-covers-section{position:relative;padding:80px 0;overflow:hidden;background:linear-gradient(180deg,var(--black) 0%,rgba(8,2,16,1) 40%,rgba(8,2,16,1) 60%,var(--black) 100%);}
+    .float-covers-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(139,0,0,.08) 0%,transparent 70%);}
+    .float-covers-inner{max-width:1200px;margin:0 auto;padding:0 24px;text-align:center;}
+    .float-label{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.38em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:40px;display:block;}
+    .float-covers-track{display:flex;gap:24px;justify-content:center;align-items:flex-end;flex-wrap:nowrap;overflow-x:auto;padding:40px 24px;scrollbar-width:none;}
+    .float-covers-track::-webkit-scrollbar{display:none;}
+    .float-cover{position:relative;flex-shrink:0;width:140px;animation:floatDrift 4s ease-in-out infinite;animation-delay:var(--delay);cursor:pointer;transition:transform .3s;}
+    .float-cover:hover{transform:translateY(-16px) scale(1.06)!important;}
+    .float-cover img{width:100%;aspect-ratio:2/3;object-fit:cover;border:1px solid rgba(201,168,76,.2);display:block;transition:all .4s;filter:brightness(.85) saturate(.9);}
+    .float-cover:hover img{filter:brightness(1.05) saturate(1.1);border-color:rgba(201,168,76,.6);box-shadow:0 12px 40px rgba(139,0,0,.5);}
+    .float-cover-glow{position:absolute;inset:-2px;background:var(--gc);opacity:0;filter:blur(18px);transition:opacity .4s;z-index:-1;border-radius:2px;}
+    .float-cover:hover .float-cover-glow{opacity:.7;}
+    @keyframes floatDrift{0%,100%{transform:translateY(0);}50%{transform:translateY(var(--drift));}}
+    .float-view-all{display:inline-block;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.35);padding-bottom:3px;margin-top:36px;transition:all .2s;}
+    .float-view-all:hover{color:var(--gold-light);border-color:var(--gold-light);}
+
+    @media(max-width:768px){.float-cover{width:110px;}.wolf-section{height:320px;}.float-covers-track{gap:14px;padding:28px 16px;}}
+    @media(max-width:480px){.float-cover{width:90px;}.float-covers-track{gap:10px;}}
+
+    /* ABOUT */
+    .about-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:920px;margin:0 auto;}
+    .about-text p{font-size:1.15rem;line-height:1.95;color:var(--text);margin-bottom:18px;opacity:.92;font-weight:400;}
+    .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .stat-card{border:1px solid rgba(201,168,76,.22);padding:28px 18px;text-align:center;background:rgba(139,0,0,.1);position:relative;transition:all .3s;}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .stat-card:hover{background:rgba(139,0,0,.2);border-color:rgba(201,168,76,.45);transform:translateY(-4px);box-shadow:0 8px 30px rgba(139,0,0,.3);}
+    .stat-n{font-family:'Cinzel Decorative',serif;font-size:2.2rem;color:var(--gold);line-height:1;margin-bottom:6px;}
+    .stat-l{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:var(--text-muted);}
+
+    /* BOOKS */
+    .books-wrap{max-width:1200px;margin:0 auto;}
+    .books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:28px;}
+    .book-card{position:relative;cursor:none;}
+    .cover-wrap{position:relative;aspect-ratio:2/3;overflow:hidden;border:1px solid rgba(201,168,76,.18);transition:all .45s;}
+    .cover-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(4,1,8,.97) 100%);}
+    .book-card:hover .cover-wrap{border-color:rgba(201,168,76,.7);box-shadow:0 0 35px rgba(139,0,0,.5),0 0 70px rgba(201,168,76,.12);transform:translateY(-9px);}
+    .cover-img{width:100%;height:100%;object-fit:cover;transition:transform .65s;filter:saturate(.88) brightness(.86);}
+    .book-card:hover .cover-img{transform:scale(1.06);filter:saturate(1.08) brightness(1);}
+    .cover-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0D0410,#3A0010,#08020C);display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:.75rem;color:var(--gold-pale);text-align:center;padding:16px;line-height:1.9;}
+    .book-info{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:14px;}
+    .b-genre{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:3px;}
+    .b-title{font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;color:var(--gold-pale);line-height:1.3;margin-bottom:4px;}
+    .b-tropes{font-family:'Cormorant Garamond',serif;font-style:normal;font-size:.72rem;color:var(--text-muted);line-height:1.4;}
+    .book-ov{position:absolute;inset:0;background:rgba(4,1,8,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity .3s;z-index:3;padding:18px;text-align:center;backdrop-filter:blur(3px);}
+    .book-card:hover .book-ov{opacity:1;}
+    .book-blurb{font-size:.8rem;line-height:1.6;color:var(--text);opacity:.88;overflow:hidden;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;margin-bottom:4px;}
+    /* red glowing eyes on hover */
+    .book-ov::before{content:'👁 👁';font-size:1.4rem;filter:drop-shadow(0 0 8px rgba(220,20,60,.9));animation:eyeGlow 2s ease-in-out infinite;}
+    @keyframes eyeGlow{0%,100%{opacity:.7;}50%{opacity:1;}}
+    .read-btn{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;padding:10px 22px;background:var(--crimson);color:var(--gold-pale);border:1px solid var(--crimson-light);text-decoration:none;transition:all .2s;}
+    .read-btn:hover{background:var(--gold);color:var(--black);border-color:var(--gold);}
+
+    /* TEASERS */
+    .teaser-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:40px;}
+    .teaser-card{border:1px solid rgba(201,168,76,.22);padding:52px 48px;background:rgba(8,2,12,.8);position:relative;overflow:hidden;backdrop-filter:blur(8px);}
+    .teaser-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(220,20,60,.6),var(--gold),rgba(220,20,60,.6),transparent);}
+    .teaser-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(220,20,60,.6),var(--gold),rgba(220,20,60,.6),transparent);}
+    .tc{position:absolute;width:30px;height:30px;}
+    .tc-tl{top:0;left:0;border-top:1px solid rgba(201,168,76,.5);border-left:1px solid rgba(201,168,76,.5);}
+    .tc-tr{top:0;right:0;border-top:1px solid rgba(201,168,76,.5);border-right:1px solid rgba(201,168,76,.5);}
+    .tc-bl{bottom:0;left:0;border-bottom:1px solid rgba(201,168,76,.5);border-left:1px solid rgba(201,168,76,.5);}
+    .tc-br{bottom:0;right:0;border-bottom:1px solid rgba(201,168,76,.5);border-right:1px solid rgba(201,168,76,.5);}
+    .t-lbl{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:8px;}
+    .t-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3vw,2rem);color:var(--gold);margin-bottom:24px;filter:drop-shadow(0 0 14px rgba(201,168,76,.4));}
+    .t-quote{font-size:clamp(1.2rem,2.2vw,1.4rem);font-style:normal;line-height:2.1;color:var(--text);border-left:2px solid var(--crimson-light);padding-left:24px;margin-bottom:32px;opacity:.92;}
+    .t-link{font-family:'Cinzel',serif;font-size:.73rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.35);padding-bottom:2px;transition:all .2s;}
+    .t-link:hover{color:var(--gold-light);border-color:var(--gold-light);}
+
+    /* TESTIMONIALS */
+    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1100px;margin:0 auto;}
+    .testi-card{border:1px solid rgba(201,168,76,.15);padding:28px 24px;background:rgba(8,2,12,.7);position:relative;transition:all .3s;}
+    .testi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--crimson-light),transparent);}
+    .testi-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-4px);box-shadow:0 8px 30px rgba(139,0,0,.2);}
+    .testi-text{font-size:1.2rem;font-style:italic;line-height:2.0;color:var(--text);opacity:.9;margin-bottom:16px;}
+    .testi-name{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);opacity:.8;}
+    .testi-platform{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crimson-light);opacity:.7;margin-top:4px;}
+    .testi-stars{color:var(--gold);font-size:.9rem;margin-bottom:10px;filter:drop-shadow(0 0 4px rgba(201,168,76,.4));}
+
+    /* NEWSLETTER */
+    .newsletter-section{
+      position:relative;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%,rgba(139,0,0,.3) 0%,transparent 70%),
+        linear-gradient(180deg,rgba(4,2,10,.97) 0%,rgba(8,3,15,.95) 100%);
+      text-align:center;
+      overflow:hidden;
+    }
+    .newsletter-wolf{
+      position:absolute;
+      bottom:0;left:50%;transform:translateX(-50%);
+      width:min(500px,70vw);
+      opacity:.07;
+      pointer-events:none;
+      z-index:0;
+    }
+    .newsletter-inner{position:relative;z-index:2;max-width:600px;margin:0 auto;}
+    .newsletter-count{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,5vw,3.5rem);color:var(--gold);filter:drop-shadow(0 0 20px rgba(201,168,76,.4));margin-bottom:4px;}
+    .newsletter-subtitle{font-family:'Cormorant Garamond',serif;font-style:normal;font-size:1.1rem;color:var(--text-muted);margin-bottom:32px;}
+    .newsletter-desc{font-size:1.2rem;line-height:2.0;color:var(--text);opacity:.85;margin-bottom:36px;}
+    .email-form{display:flex;gap:0;max-width:480px;margin:0 auto 16px;}
+    .email-input{
+      flex:1;padding:14px 20px;
+      background:rgba(4,1,8,.8);
+      border:1px solid rgba(201,168,76,.3);
+      border-right:none;
+      color:var(--text);
+      font-family:'Cormorant Garamond',serif;font-size:1rem;
+      outline:none;
+    }
+    .email-input::placeholder{color:var(--text-muted);opacity:.6;}
+    .email-input:focus{border-color:var(--gold);}
+    .email-submit{
+      font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+      padding:14px 24px;background:var(--crimson);color:var(--gold-pale);
+      border:1px solid var(--crimson-light);cursor:pointer;transition:all .3s;white-space:nowrap;
+      text-decoration:none;display:inline-block;
+    }
+    .email-submit:hover{background:var(--gold);color:var(--black);}
+    .newsletter-fine{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.15em;color:var(--text-muted);opacity:.55;}
+
+    /* PLATFORMS */
+    .plat-wrap{max-width:780px;margin:0 auto;text-align:center;}
+    .plat-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:40px;}
+    .plat-btn{font-family:'Cinzel',serif;font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;padding:13px 28px;border:1px solid rgba(201,168,76,.32);color:var(--gold);text-decoration:none;background:rgba(139,0,0,.08);position:relative;overflow:hidden;transition:all .3s;}
+    .plat-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,0,0,.32),rgba(201,168,76,.16));opacity:0;transition:opacity .3s;}
+    .plat-btn:hover::before{opacity:1;}
+    .plat-btn:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,.22);transform:translateY(-2px);}
+    .plat-btn span{position:relative;z-index:1;}
+    .plat-btn.plat-featured{border-color:var(--gold);background:rgba(139,0,0,.2);color:var(--gold-light);box-shadow:0 0 20px rgba(201,168,76,.15);}
+    .plat-btn.plat-featured:hover{box-shadow:0 0 35px rgba(201,168,76,.4);}
+
+    /* MILESTONE BADGE */
+    .milestone-badge{position:absolute;top:10px;right:10px;z-index:4;text-align:center;pointer-events:none;padding:8px 10px;background:rgba(4,1,8,.85);border:1px solid rgba(201,168,76,.6);backdrop-filter:blur(4px);}
+    .milestone-badge .m-number{font-family:'Cinzel Decorative',serif;font-size:1rem;font-weight:900;background:linear-gradient(135deg,#FFFDE0,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 10px rgba(201,168,76,.9));line-height:1;display:block;}
+    .milestone-badge .m-label{font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-pale);opacity:.85;display:block;margin-top:3px;}
+    @keyframes milestoneGlow{0%,100%{box-shadow:0 0 8px rgba(201,168,76,.3);}50%{box-shadow:0 0 22px rgba(201,168,76,.7);}}
+    .milestone-badge{animation:milestoneGlow 2.5s ease-in-out infinite;}
+
+    /* FOOTER */
+    footer{position:relative;z-index:3;border-top:1px solid rgba(201,168,76,.1);padding:52px 24px 32px;background:rgba(2,1,6,1);}
+    .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+    .footer-col-title{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;opacity:.8;}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+    .footer-links a{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+    .footer-links a:hover{color:var(--gold);}
+    .footer-warning{font-family:'Cormorant Garamond',serif;font-style:normal;font-size:.9rem;line-height:1.7;color:var(--text-muted);opacity:.7;}
+    .footer-bottom{text-align:center;border-top:1px solid rgba(201,168,76,.08);padding-top:28px;}
+    .f-logo{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold);margin-bottom:8px;opacity:.65;}
+    .f-copy{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--text-muted);opacity:.4;}
+
+    @media(max-width:900px){.footer-inner{grid-template-columns:1fr 1fr;}.about-inner{grid-template-columns:1fr;gap:40px;}}
+    @media(max-width:768px){nav{padding:16px 20px;top:30px;}.nav-links{gap:16px;}.nav-links a{font-size:.58rem;}.teaser-card{padding:32px 22px;}.books-grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:18px;}.hero-content{padding:36px 26px;margin:0 16px;}.moon-container{width:300px;height:300px;}.moon-halo{width:360px;height:360px;top:-80px;}.email-form{flex-direction:column;}.email-input{border-right:1px solid rgba(201,168,76,.3);border-bottom:none;}.footer-inner{grid-template-columns:1fr;gap:32px;}}
+    @media(max-width:480px){.nav-links{display:none;}.books-grid{grid-template-columns:repeat(2,1fr);}}
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- 18+ WARNING BAR -->
+<div class="warning-bar">
+  <span class="warn-badge">18+</span>
+  <span>Dark Themes · No Escaping the Alpha</span>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Little Anna</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="books.html">Books</a></li>
+    <li><a href="tropes.html">Tropes & Triggers</a></li>
+    <li><a href="blog.html">Dark Moon Blog</a></li>
+    <li><a href="pack.html">Join the Pack</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="sky"></div>
+  <canvas id="stars"></canvas>
+  <canvas id="embers"></canvas>
+  <div class="moon-halo"></div>
+  <div class="moon-container">
+    <div class="moon-haze"></div>
+    <div class="moon-disc"></div>
+  </div>
+  <div class="moon-beam"></div>
+
+  <!-- FOREST -->
+  <svg class="forest-svg" viewBox="0 0 1440 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <linearGradient id="farTree" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:rgb(35,4,8);stop-opacity:0.75"/><stop offset="100%" style="stop-color:rgb(8,1,2);stop-opacity:1"/></linearGradient>
+      <linearGradient id="nearTree" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:rgb(18,2,4);stop-opacity:0.95"/><stop offset="100%" style="stop-color:rgb(4,0,1);stop-opacity:1"/></linearGradient>
+      <linearGradient id="castleFade" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:rgb(50,8,12);stop-opacity:0.35"/><stop offset="100%" style="stop-color:rgb(10,1,2);stop-opacity:0.6"/></linearGradient>
+    </defs>
+    <g fill="url(#castleFade)" opacity="0.5">
+      <rect x="600" y="280" width="12" height="100"/><polygon points="594,280 606,255 618,280"/>
+      <rect x="630" y="300" width="40" height="80"/><rect x="638" y="270" width="10" height="30"/>
+      <polygon points="633,270 643,248 653,270"/><rect x="655" y="288" width="15" height="92"/>
+      <polygon points="649,288 663,260 677,288"/>
+      <rect x="636" y="305" width="5" height="7" fill="rgba(220,40,20,0.5)"/>
+      <rect x="648" y="305" width="5" height="7" fill="rgba(200,30,15,0.4)"/>
+    </g>
+    <g fill="url(#farTree)">
+      <polygon points="0,480 28,265 56,480"/><polygon points="45,480 76,248 107,480"/>
+      <polygon points="95,480 130,258 165,480"/><polygon points="148,480 182,244 216,480"/>
+      <polygon points="210,480 246,252 282,480"/><polygon points="272,480 305,260 338,480"/>
+      <polygon points="422,480 455,255 488,480"/><polygon points="500,480 532,249 564,480"/>
+      <polygon points="578,480 612,260 646,480"/><polygon points="752,480 784,252 816,480"/>
+      <polygon points="820,480 852,246 884,480"/><polygon points="895,480 928,256 961,480"/>
+      <polygon points="970,480 1002,248 1034,480"/><polygon points="1045,480 1078,258 1111,480"/>
+      <polygon points="1118,480 1150,250 1182,480"/><polygon points="1265,480 1298,252 1331,480"/>
+      <polygon points="1340,480 1374,244 1408,480"/><polygon points="1400,480 1432,255 1464,480"/>
+    </g>
+    <g fill="url(#nearTree)">
+      <polygon points="-20,480 22,192 64,480"/><polygon points="18,480 55,218 92,480"/>
+      <polygon points="72,480 120,178 168,480"/><polygon points="118,480 160,205 202,480"/>
+      <polygon points="195,480 245,172 295,480"/><polygon points="242,480 285,200 328,480"/>
+      <polygon points="345,480 398,168 451,480"/><polygon points="395,480 440,196 485,480"/>
+      <polygon points="510,480 565,174 620,480"/><polygon points="820,480 875,174 930,480"/>
+      <polygon points="985,480 1040,170 1095,480"/><polygon points="1155,480 1210,176 1265,480"/>
+      <polygon points="1320,480 1375,172 1430,480"/><polygon points="1372,480 1416,196 1460,480"/>
+    </g>
+    <rect x="0" y="440" width="1440" height="40" fill="url(#nearTree)" opacity="0.9"/>
+  </svg>
+
+  <!-- FLOWERS LEFT -->
+  <svg class="mist-flowers-left" viewBox="0 0 260 420" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="fgL" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgb(255,235,130);stop-opacity:1"/><stop offset="100%" style="stop-color:rgb(160,55,10);stop-opacity:0.1"/></radialGradient>
+      <radialGradient id="pL" cx="50%" cy="75%" r="55%"><stop offset="0%" style="stop-color:rgb(255,200,90);stop-opacity:0.9"/><stop offset="100%" style="stop-color:rgb(140,40,5);stop-opacity:0.3"/></radialGradient>
+    </defs>
+    <g stroke="rgba(130,65,15,0.8)" stroke-width="2" fill="none">
+      <path d="M55,420 Q60,340 48,270 Q38,215 62,155"/>
+      <path d="M115,420 Q122,348 108,278 Q96,218 124,162"/>
+      <path d="M175,420 Q180,355 165,290 Q153,232 178,178"/>
+      <path d="M52,310 Q24,292 26,270 Q52,286 56,306Z" fill="rgba(90,38,8,0.55)" stroke="none"/>
+      <path d="M60,260 Q86,240 84,218 Q60,234 56,256Z" fill="rgba(90,38,8,0.5)" stroke="none"/>
+      <path d="M112,330 Q85,312 87,290 Q113,306 116,326Z" fill="rgba(90,38,8,0.55)" stroke="none"/>
+    </g>
+    <g transform="translate(62,155)"><ellipse rx="15" ry="25" transform="rotate(0)" fill="url(#pL)"/><ellipse rx="15" ry="25" transform="rotate(72)" fill="url(#pL)"/><ellipse rx="15" ry="25" transform="rotate(144)" fill="url(#pL)"/><ellipse rx="15" ry="25" transform="rotate(216)" fill="url(#pL)"/><ellipse rx="15" ry="25" transform="rotate(288)" fill="url(#pL)"/><circle r="13" fill="url(#fgL)"/><circle r="5" fill="rgba(255,248,180,0.95)"/></g>
+    <g transform="translate(124,162)"><ellipse rx="13" ry="21" transform="rotate(15)" fill="url(#pL)"/><ellipse rx="13" ry="21" transform="rotate(87)" fill="url(#pL)"/><ellipse rx="13" ry="21" transform="rotate(159)" fill="url(#pL)"/><ellipse rx="13" ry="21" transform="rotate(231)" fill="url(#pL)"/><ellipse rx="13" ry="21" transform="rotate(303)" fill="url(#pL)"/><circle r="11" fill="url(#fgL)"/><circle r="4" fill="rgba(255,248,180,0.95)"/></g>
+    <g transform="translate(178,178)"><ellipse rx="14" ry="22" transform="rotate(8)" fill="url(#pL)"/><ellipse rx="14" ry="22" transform="rotate(80)" fill="url(#pL)"/><ellipse rx="14" ry="22" transform="rotate(152)" fill="url(#pL)"/><ellipse rx="14" ry="22" transform="rotate(224)" fill="url(#pL)"/><ellipse rx="14" ry="22" transform="rotate(296)" fill="url(#pL)"/><circle r="12" fill="url(#fgL)"/><circle r="4.5" fill="rgba(255,248,180,0.95)"/></g>
+    <g stroke="rgba(255,210,80,0.22)" stroke-width="1.5" fill="none"><line x1="62" y1="155" x2="50" y2="0"/><line x1="124" y1="162" x2="118" y2="5"/><line x1="178" y1="178" x2="175" y2="20"/></g>
+    <g fill="rgba(255,215,70,0.6)"><circle cx="82" cy="130" r="2"/><circle cx="44" cy="142" r="1.5"/><circle cx="106" cy="138" r="2"/><circle cx="148" cy="132" r="1.5"/><circle cx="200" cy="148" r="2"/></g>
+  </svg>
+
+  <!-- FLOWERS RIGHT -->
+  <svg class="mist-flowers-right" viewBox="0 0 240 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="fgR" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgb(255,235,130);stop-opacity:1"/><stop offset="100%" style="stop-color:rgb(160,55,10);stop-opacity:0.1"/></radialGradient>
+      <radialGradient id="pR" cx="50%" cy="75%" r="55%"><stop offset="0%" style="stop-color:rgb(255,200,90);stop-opacity:0.9"/><stop offset="100%" style="stop-color:rgb(140,40,5);stop-opacity:0.3"/></radialGradient>
+    </defs>
+    <g stroke="rgba(130,65,15,0.8)" stroke-width="2" fill="none">
+      <path d="M185,400 Q180,325 192,258 Q202,202 178,148"/>
+      <path d="M125,400 Q118,330 132,262 Q144,202 116,158"/>
+      <path d="M65,400 Q60,338 75,272 Q87,214 62,168"/>
+      <path d="M188,298 Q215,280 212,258 Q188,274 184,294Z" fill="rgba(90,38,8,0.55)" stroke="none"/>
+      <path d="M128,318 Q155,300 152,278 Q127,294 124,314Z" fill="rgba(90,38,8,0.55)" stroke="none"/>
+    </g>
+    <g transform="translate(178,148)"><ellipse rx="14" ry="23" transform="rotate(0)" fill="url(#pR)"/><ellipse rx="14" ry="23" transform="rotate(72)" fill="url(#pR)"/><ellipse rx="14" ry="23" transform="rotate(144)" fill="url(#pR)"/><ellipse rx="14" ry="23" transform="rotate(216)" fill="url(#pR)"/><ellipse rx="14" ry="23" transform="rotate(288)" fill="url(#pR)"/><circle r="12" fill="url(#fgR)"/><circle r="4.5" fill="rgba(255,248,180,0.95)"/></g>
+    <g transform="translate(116,158)"><ellipse rx="12" ry="20" transform="rotate(18)" fill="url(#pR)"/><ellipse rx="12" ry="20" transform="rotate(90)" fill="url(#pR)"/><ellipse rx="12" ry="20" transform="rotate(162)" fill="url(#pR)"/><ellipse rx="12" ry="20" transform="rotate(234)" fill="url(#pR)"/><ellipse rx="12" ry="20" transform="rotate(306)" fill="url(#pR)"/><circle r="10" fill="url(#fgR)"/><circle r="4" fill="rgba(255,248,180,0.95)"/></g>
+    <g transform="translate(62,168)"><ellipse rx="13" ry="21" transform="rotate(10)" fill="url(#pR)"/><ellipse rx="13" ry="21" transform="rotate(82)" fill="url(#pR)"/><ellipse rx="13" ry="21" transform="rotate(154)" fill="url(#pR)"/><ellipse rx="13" ry="21" transform="rotate(226)" fill="url(#pR)"/><ellipse rx="13" ry="21" transform="rotate(298)" fill="url(#pR)"/><circle r="11" fill="url(#fgR)"/><circle r="4" fill="rgba(255,248,180,0.95)"/></g>
+    <g stroke="rgba(255,210,80,0.22)" stroke-width="1.5" fill="none"><line x1="178" y1="148" x2="190" y2="0"/><line x1="116" y1="158" x2="122" y2="5"/><line x1="62" y1="168" x2="65" y2="15"/></g>
+    <g fill="rgba(255,215,70,0.6)"><circle cx="158" cy="122" r="2"/><circle cx="136" cy="135" r="2"/><circle cx="82" cy="148" r="2"/></g>
+  </svg>
+
+  <div class="mist-2"></div>
+  <div class="mist-1"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Dark Romance · Werewolf Fantasy · 18+</p>
+    <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-gem"></div><div class="orn-dot"></div><div class="orn-line"></div></div>
+    <h1 class="hero-headline">He'll hunt you.<br>Claim you. Keep you.</h1>
+    <p class="hero-sub">"Dark werewolf romance where the mate bond is forever… and consent is optional."</p>
+    <div class="orn"><div class="orn-line"></div><div class="orn-dot"></div><div class="orn-gem"></div><div class="orn-dot"></div><div class="orn-line"></div></div>
+    <p class="hero-desc">Fate may have picked the thread.<br>But I decide how it knots… and who it strangles.<br><br>There's always a new story waiting in the dark for you.<br>Come get lost.</p>
+    <div class="hero-cta">
+      <a href="#books" class="btn-p"><span>Enter the Pack</span></a>
+      <a href="http://eepurl.com/jBkDA6" class="btn-g">Join the Moonlit List</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="sep"></div>
+
+<!-- MOON PHASE CINEMATIC -->
+<div class="moon-phase-section" id="wolf-parallax">
+  <canvas id="wolf-canvas"></canvas>
+  <div class="moon-phase-inner reveal">
+    <p class="wolf-label">Tonight's Moon</p>
+    <div class="big-moon-display">
+      <div class="big-moon-emoji" id="big-moon-emoji">🌕</div>
+      <div class="big-moon-glow" id="big-moon-glow"></div>
+    </div>
+    <p class="big-moon-name" id="big-moon-name">Full Moon</p>
+    <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+    <p class="big-moon-lore" id="big-moon-lore"></p>
+    <div class="moon-phases-row">
+      <div class="mph" id="mph-new"><span class="mph-emoji">🌑</span><span class="mph-name">New</span></div>
+      <div class="mph" id="mph-waxing"><span class="mph-emoji">🌒</span><span class="mph-name">Waxing</span></div>
+      <div class="mph" id="mph-full"><span class="mph-emoji">🌕</span><span class="mph-name">Full</span></div>
+      <div class="mph" id="mph-waning"><span class="mph-emoji">🌘</span><span class="mph-name">Waning</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-head reveal">
+    <p class="sec-label">The Author</p>
+    <h2 class="sec-title">Little Anna Has An Idea</h2>
+    <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+  </div>
+  <div class="about-inner reveal">
+    <div class="about-text">
+      <p>Hello loves! 💕</p>
+      <p>If you love unhinged, morally gray alphas with fangs who will pin you down and make you crawl for them…</p>
+      <p>If you crave heroines who get knocked down, spit blood, and still come back swinging…</p>
+      <p>If you want bonds that hurt like hell before they destroy you in the best way…</p>
+      <p>Then welcome to my world. I write dark romance werewolf fantasy and I'm so excited to drag you into it.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card"><div class="stat-n">10+</div><div class="stat-l">Published Books</div></div>
+      <div class="stat-card"><div class="stat-n">∞</div><div class="stat-l">Worlds Built</div></div>
+      <div class="stat-card"><div class="stat-n">🐺</div><div class="stat-l">Alphas Written</div></div>
+      <div class="stat-card"><div class="stat-n">🌕</div><div class="stat-l">Moons Howled At</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- BOOKS -->
+<section id="books">
+  <div class="books-wrap">
+    <div class="sec-head reveal">
+      <p class="sec-label">The Collection</p>
+      <h2 class="sec-title">The Books</h2>
+      <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+    </div>
+    <div class="books-grid reveal">
+
+      <div class="book-card">
+        <div class="cover-wrap">
+          <img src="1000006839.jpg" alt="His Troublemaker Luna" class="cover-img"/>
+          <div class="milestone-badge"><span class="m-number">300K</span><span class="m-label">Views</span></div>
+          <div class="book-info"><div class="b-genre">Shifter Romance · Completed</div><div class="b-title">His Troublemaker Luna</div><div class="b-tropes">Brat · Age Gap · Enemies to Lovers</div></div>
+          <div class="book-ov">
+            <p class="book-blurb">Fate doesn't care that Gray doesn't want her. It doesn't care that Jessica refuses to kneel. When the bond snaps into place — one of them will break first. He's never lost control. She's never belonged to anyone. One of them is lying.</p>
+            <a href="https://api.novel-oasis.com/middle/share?user_id=1091055&book_id=52928&platform=15&sign=4dc9656be474bdfbeebee7e370513faf" class="read-btn">Read Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover-wrap">
+          <img src="1000006831.jpg" alt="Claimed by My Brother's Best Friend" class="cover-img"/>
+          <div class="book-info"><div class="b-genre">Dark Romance · Ongoing</div><div class="b-title">Claimed by My Brother's Best Friend</div><div class="b-tropes">Forbidden · Age Gap · Possessive</div></div>
+          <div class="book-ov">
+            <p class="book-blurb">There are lines you don't cross. You don't want your best friend's little sister. I've broken every rule. I've starved myself for years. She came to me — and I'm done pretending I'm a good man. I'm not asking. I'm taking.</p>
+            <a href="https://api.novel-oasis.com/middle/share?user_id=1091055&book_id=55965&platform=15&sign=6e2d6395761169200fb8319f3160060c" class="read-btn">Read Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover-wrap">
+          <img src="taming-alphas-daughter.png" alt="Taming the Alpha's Daughter" class="cover-img"/>
+          <div class="book-info"><div class="b-genre">Dark Romance · Completed</div><div class="b-title">Taming the Alpha's Daughter</div><div class="b-tropes">Reverse Harem · Dark Club · Revenge</div></div>
+          <div class="book-ov">
+            <p class="book-blurb">He rejected me in front of the whole damn town. So I walked straight into Obsidian — the kind of place good girls aren't supposed to know about. Dos. Rage. West. I need them. Tonight I'm done being a good girl.</p>
+            <a href="#" class="read-btn">Read Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="cover-wrap">
+          <img src="1000006837.jpg" alt="His Substitute Luna" class="cover-img"/>
+          <div class="book-info"><div class="b-genre">Shifter Romance · Ongoing</div><div class="b-title">His Substitute Luna</div><div class="b-tropes">Rejected Mate · Rogue Queen · Two Alphas</div></div>
+          <div class="book-ov">
+            <p class="book-blurb">Rejected. Framed. Thrown in a dungeon. Asha Thorne should've died for her Alpha. Instead she lived — for herself. Now she's a Rogue Queen with a stolen crown. So why is the mate who broke her showing up ready to grovel and share?</p>
+            <a href="#" class="read-btn">Read Now</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:40px;">
+      <a href="books.html" style="font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.35);padding-bottom:3px;transition:all .2s;">View All Books →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FLOATING COVERS -->
+<div class="float-covers-section">
+  <div class="float-covers-bg"></div>
+  <div class="float-covers-inner">
+    <p class="float-label reveal">The World You're About to Enter</p>
+    <div class="float-covers-track" id="floatTrack">
+      <div class="float-cover" style="--delay:0s;--drift:12px"><img src="1000006839.jpg" alt="His Troublemaker Luna"/><div class="float-cover-glow" style="--gc:rgba(220,20,60,.5)"></div></div>
+      <div class="float-cover" style="--delay:.4s;--drift:-10px"><img src="1000006831.jpg" alt="Claimed"/><div class="float-cover-glow" style="--gc:rgba(201,168,76,.4)"></div></div>
+      <div class="float-cover" style="--delay:.8s;--drift:14px"><img src="taming-alphas-daughter.png" alt="Taming"/><div class="float-cover-glow" style="--gc:rgba(139,0,0,.5)"></div></div>
+      <div class="float-cover" style="--delay:.2s;--drift:-8px"><img src="1000006837.jpg" alt="His Substitute Luna"/><div class="float-cover-glow" style="--gc:rgba(220,20,60,.4)"></div></div>
+      <div class="float-cover" style="--delay:.6s;--drift:10px"><img src="hotline-pleasure.jpg" alt="Hotline Pleasure"/><div class="float-cover-glow" style="--gc:rgba(201,168,76,.5)"></div></div>
+      <div class="float-cover" style="--delay:1s;--drift:-12px"><img src="your-beta-will-do.png" alt="Your Beta Will Do"/><div class="float-cover-glow" style="--gc:rgba(139,0,0,.4)"></div></div>
+      <div class="float-cover" style="--delay:.3s;--drift:8px"><img src="mafia-sweetheart.png" alt="Mafia's Sweetheart"/><div class="float-cover-glow" style="--gc:rgba(201,168,76,.4)"></div></div>
+      <div class="float-cover" style="--delay:.7s;--drift:-14px"><img src="1000006836.jpg" alt="Warrior Luna"/><div class="float-cover-glow" style="--gc:rgba(220,20,60,.5)"></div></div>
+    </div>
+    <a href="books.html" class="float-view-all reveal">View the Full Collection →</a>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- 300K MILESTONE BANNER -->
+<section style="padding:90px 24px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 0%, rgba(15,20,60,.8) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 40% at 20% 100%, rgba(10,15,50,.6) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(12,18,55,.5) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(3,4,16,.99) 0%, rgba(5,7,22,.97) 40%, rgba(4,5,18,.99) 100%);">
+
+  <!-- MOON GLOW top center — silver crimson -->
+  <div style="position:absolute;top:-140px;left:50%;transform:translateX(-50%);width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle, rgba(255,240,220,.06) 0%, rgba(200,60,30,.07) 35%, rgba(100,20,10,.05) 60%, transparent 78%);
+    box-shadow:0 0 80px rgba(180,40,20,.1), 0 0 160px rgba(100,20,10,.08);
+    pointer-events:none;animation:milestoneGlow 4s ease-in-out infinite;"></div>
+  <!-- silver moon rim -->
+  <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:260px;height:260px;border-radius:50%;
+    border:1px solid rgba(220,200,180,.08);
+    box-shadow:0 0 40px rgba(220,180,140,.06);
+    pointer-events:none;"></div>
+
+  <!-- SMOKE layers — dark navy blue-black -->
+  <div style="position:absolute;bottom:0;left:-15%;right:-15%;height:220px;
+    background:
+      radial-gradient(ellipse 70% 100% at 25% 100%, rgba(8,12,45,.75) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 90% at 75% 100%, rgba(6,10,40,.65) 0%, transparent 60%);
+    filter:blur(22px);pointer-events:none;animation:mistDrift 12s ease-in-out infinite;"></div>
+  <div style="position:absolute;bottom:50px;left:-25%;right:-25%;height:160px;
+    background:radial-gradient(ellipse 80% 100% at 50% 100%, rgba(5,8,35,.55) 0%, transparent 70%);
+    filter:blur(32px);pointer-events:none;animation:mistDrift 16s ease-in-out infinite reverse;"></div>
+  <div style="position:absolute;top:35%;left:0;right:0;height:80px;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%, rgba(8,12,50,.15) 0%, transparent 75%);
+    filter:blur(24px);pointer-events:none;"></div>
+
+  <!-- floating gold + crimson particles -->
+  <div style="position:absolute;inset:0;pointer-events:none;">
+    <div style="position:absolute;top:28%;left:10%;width:2px;height:2px;border-radius:50%;background:rgba(201,168,76,.7);box-shadow:0 0 6px rgba(201,168,76,.5);animation:emberFloat 5s ease-in-out infinite;"></div>
+    <div style="position:absolute;top:50%;left:7%;width:3px;height:3px;border-radius:50%;background:rgba(220,60,20,.6);box-shadow:0 0 8px rgba(200,40,10,.4);animation:emberFloat 7s ease-in-out infinite 1s;"></div>
+    <div style="position:absolute;top:32%;right:9%;width:2px;height:2px;border-radius:50%;background:rgba(201,168,76,.6);box-shadow:0 0 6px rgba(201,168,76,.4);animation:emberFloat 6s ease-in-out infinite 2s;"></div>
+    <div style="position:absolute;top:62%;right:14%;width:3px;height:3px;border-radius:50%;background:rgba(220,80,30,.5);animation:emberFloat 8s ease-in-out infinite .5s;"></div>
+    <div style="position:absolute;top:22%;left:42%;width:2px;height:2px;border-radius:50%;background:rgba(240,200,120,.5);animation:emberFloat 9s ease-in-out infinite 3s;"></div>
+    <div style="position:absolute;top:68%;left:28%;width:2px;height:2px;border-radius:50%;background:rgba(201,168,76,.6);box-shadow:0 0 5px rgba(180,140,50,.4);animation:emberFloat 6s ease-in-out infinite 1.5s;"></div>
+  </div>
+
+  <!-- border lines — crimson gold -->
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(139,0,0,.6),rgba(201,168,76,.5),rgba(139,0,0,.6),transparent);"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(139,0,0,.6),rgba(201,168,76,.5),rgba(139,0,0,.6),transparent);"></div>
+
+  <!-- CONTENT -->
+  <div class="reveal" style="position:relative;z-index:2;max-width:860px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:60px;align-items:center;">
+
+    <!-- BOOK COVER -->
+    <div style="position:relative;flex-shrink:0;">
+      <div style="position:absolute;inset:-18px;border-radius:2px;
+        background:radial-gradient(ellipse, rgba(139,0,0,.2) 0%, rgba(20,30,80,.15) 50%, transparent 75%);
+        animation:milestoneGlow 3s ease-in-out infinite;"></div>
+      <div style="position:absolute;inset:-2px;border:1px solid rgba(201,168,76,.3);"></div>
+      <img src="1000006839.jpg" alt="His Troublemaker Luna" style="width:195px;aspect-ratio:2/3;object-fit:cover;display:block;position:relative;z-index:1;
+        box-shadow:0 0 30px rgba(10,15,60,.8), 0 0 60px rgba(139,0,0,.2), -4px 8px 24px rgba(0,0,8,.95);"/>
+      <div style="position:absolute;top:-2px;left:-2px;width:14px;height:14px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);z-index:2;"></div>
+      <div style="position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);z-index:2;"></div>
+      <div style="position:absolute;bottom:-2px;left:-2px;width:14px;height:14px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);z-index:2;"></div>
+      <div style="position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);z-index:2;"></div>
+    </div>
+
+    <!-- TEXT -->
+    <div>
+      <p style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.4em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:10px;">✦ Milestone ✦</p>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:900;line-height:.95;
+        background:linear-gradient(135deg, #FFFDE0 0%, var(--gold-light) 30%, var(--gold) 58%, var(--crimson-light) 82%, var(--gold-light) 100%);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        filter:drop-shadow(0 0 35px rgba(201,168,76,.65)) drop-shadow(0 0 12px rgba(220,20,60,.3));
+        animation:milestoneGlow 2.5s ease-in-out infinite;">300K</div>
+      <p style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:10px 0 6px;opacity:.85;">Views · His Troublemaker Luna</p>
+      <div style="width:180px;height:1px;background:linear-gradient(90deg,var(--crimson-light),rgba(201,168,76,.4),transparent);margin:14px 0;"></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:normal;font-size:clamp(.95rem,1.8vw,1.15rem);line-height:1.95;color:var(--text);opacity:.88;margin-bottom:28px;">Three hundred thousand of you chose to get lost in his world.<br>Three hundred thousand of you stayed.</p>
+      <a href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;padding:12px 30px;
+        background:linear-gradient(135deg,var(--crimson),#A00000);
+        color:var(--gold-pale);border:1px solid rgba(220,20,60,.5);text-decoration:none;
+        box-shadow:0 4px 20px rgba(139,0,0,.5);transition:all .3s;">Read Now</a>
+    </div>
+  </div>
+</section>
+<section id="teasers">
+  <div class="sec-head reveal">
+    <p class="sec-label">A Taste of Darkness</p>
+    <h2 class="sec-title">Featured Teasers</h2>
+    <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+  </div>
+  <div class="teaser-wrap">
+    <div class="teaser-card reveal">
+      <div class="tc tc-tl"></div><div class="tc tc-tr"></div><div class="tc tc-bl"></div><div class="tc tc-br"></div>
+      <p class="t-lbl">His Troublemaker Luna</p>
+      <h3 class="t-title">She Was Never Supposed to Be His.</h3>
+      <blockquote class="t-quote">"He let them call her weak. Let his brothers push her around, let the pack treat her like she was nothing — because the moment he claimed her, the moment he said her name out loud in front of everyone, it was over for him. He knew that. So he waited. He watched. He told himself he was being patient. He was lying. There is nothing patient about the way he looked at her. Nothing kind about the way he counted down the days. She was seventeen, untouched, and already the most dangerous thing in his world — and she didn't even know it yet."</blockquote>
+      <a href="https://api.novel-oasis.com/middle/share?user_id=1091055&book_id=52928&platform=15&sign=4dc9656be474bdfbeebee7e370513faf" class="t-link">Read His Troublemaker Luna →</a>
+    </div>
+    <div class="teaser-card reveal">
+      <div class="tc tc-tl"></div><div class="tc tc-tr"></div><div class="tc tc-bl"></div><div class="tc tc-br"></div>
+      <p class="t-lbl">The Warrior Luna & Her Mad Dog Alpha</p>
+      <h3 class="t-title">She Did Not Come Home to Be Tamed.</h3>
+      <blockquote class="t-quote">"A hundred battles. A hundred victories. She came home with blood on her hands and her head held high, certain that the title was hers. Her father looked at her and said — you are a woman. As if that explained everything. As if that erased everything. They lined up three Alphas for her to choose from. Strong ones. Safe ones. The kind of men her father could control through her. She looked at all three of them. Then she looked at him — the one they called the Mad Dog, the disgraced one, the lowest of the low. And she smiled. If she was going to burn everything down anyway, she might as well choose the match."</blockquote>
+      <a href="#" class="t-link">Read The Warrior Luna →</a>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- TESTIMONIALS -->
+<section id="reviews">
+  <div class="sec-head reveal">
+    <p class="sec-label">The Pack Speaks</p>
+    <h2 class="sec-title">Reader Reviews</h2>
+    <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+  </div>
+  <div class="testimonials-grid reveal">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I started reading at 11pm. It was 4am before I looked up. I have work tomorrow and I do not regret a single thing."</p>
+      <p class="testi-name">@moonbound.reader</p>
+      <p class="testi-platform">Wattpad</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The alpha in this book is the most unhinged possessive man I have ever read and I am completely normal about it. (I am not normal about it.)"</p>
+      <p class="testi-name">@feralforalphas</p>
+      <p class="testi-platform">Webnovel</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The heroine said 'I will not survive this' and then proceeded to completely destroy him and I have never cheered louder in my life."</p>
+      <p class="testi-name">@darkmoonreads</p>
+      <p class="testi-platform">GoodNovel</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Enemies to lovers done RIGHT. The tension was so thick I couldn't breathe. Little Anna has ruined all other books for me and I am grateful."</p>
+      <p class="testi-name">@claimedbywords</p>
+      <p class="testi-platform">Dreame</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I recommended this to my entire book club. Half of them are now feral. You're welcome and I'm sorry."</p>
+      <p class="testi-name">@bookbitten</p>
+      <p class="testi-platform">Wattpad</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The mate bond scenes had me actually putting the book down to collect myself. Then immediately picking it back up. Three times."</p>
+      <p class="testi-name">@lunaticreader</p>
+      <p class="testi-platform">MegaNovel</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section" id="newsletter">
+  <!-- ghost wolf behind -->
+  <svg class="newsletter-wolf" viewBox="0 0 500 480" xmlns="http://www.w3.org/2000/svg" fill="rgba(139,0,0,0.6)">
+    <ellipse cx="250" cy="400" rx="120" ry="65"/><ellipse cx="250" cy="305" rx="72" ry="95"/>
+    <path d="M148,388 Q90,345 72,282 Q58,234 88,212 Q106,226 100,258 Q96,292 122,330 Q148,362 162,392Z"/>
+    <path d="M215,228 Q230,192 244,160 Q250,144 256,160 Q270,192 285,228 Q268,218 250,216 Q232,218 215,228Z"/>
+    <ellipse cx="252" cy="128" rx="46" ry="52" transform="rotate(-8,252,128)"/>
+    <path d="M228,104 Q252,52 276,104 Q264,118 252,116 Q240,118 228,104Z"/>
+    <polygon points="216,88 198,38 236,72"/><polygon points="288,88 306,38 268,72"/>
+    <rect x="212" y="378" width="32" height="95" rx="12"/><rect x="256" y="378" width="32" height="95" rx="12"/>
+  </svg>
+  <div class="newsletter-inner reveal">
+    <div class="sec-head">
+      <p class="sec-label">The Moon Call</p>
+      <h2 class="sec-title">Join the Moonlit List</h2>
+      <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+    </div>
+    <div class="newsletter-count">Join the Pack</div>
+    <p class="newsletter-subtitle">Readers who crave the bite</p>
+    <p class="newsletter-desc">Get new release alerts, exclusive bonus scenes, behind-the-scenes lore, and early access to chapters — straight to your inbox. No spam. Only darkness.</p>
+    <div class="email-form">
+      <input class="email-input" type="email" placeholder="your@email.com"/>
+      <a href="http://eepurl.com/jBkDA6" target="_blank" class="email-submit">I Want to Be Claimed</a>
+    </div>
+    <p class="newsletter-fine">18+ only · Unsubscribe anytime · No escaping the Alpha (the email list is another matter)</p>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PLATFORMS -->
+<section id="platforms">
+  <div class="plat-wrap reveal">
+    <div class="sec-head">
+      <p class="sec-label">Find My Stories</p>
+      <h2 class="sec-title">Read on Your Platform</h2>
+      <div class="orn2"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+      <p style="font-size:1rem;color:var(--text-muted);margin-top:16px;font-style:normal;">All stories available across these platforms. Find yours and dive in.</p>
+    </div>
+    <div class="plat-grid">
+      <a href="#" class="plat-btn"><span>Wattpad</span></a>
+      <a href="#" class="plat-btn"><span>Webnovel</span></a>
+      <a href="#" class="plat-btn plat-featured"><span>✦ GoodNovel</span></a>
+      <a href="#" class="plat-btn"><span>MegaNovel</span></a>
+      <a href="#" class="plat-btn"><span>Dreame</span></a>
+      <a href="#" class="plat-btn"><span>AnyStories</span></a>
+      <a href="#" class="plat-btn plat-featured"><span>✦ Letterlux</span></a>
+      <a href="#" class="plat-btn"><span>AlphaNovel</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-col-title">Navigate</p>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="books.html">Books</a></li>
+        <li><a href="tropes.html">Tropes & Triggers</a></li>
+        <li><a href="blog.html">Dark Moon Blog</a></li>
+        <li><a href="http://eepurl.com/jBkDA6">Join the Pack</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Read On</p>
+      <ul class="footer-links">
+        <li><a href="#">Wattpad</a></li>
+        <li><a href="#">Webnovel</a></li>
+        <li><a href="#">GoodNovel</a></li>
+        <li><a href="#">MegaNovel</a></li>
+        <li><a href="#">Dreame</a></li>
+        <li><a href="#">AnyStories</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Content Warning</p>
+      <p class="footer-warning">All stories on this site are intended for readers 18 and older. Content includes dark themes, possessive and obsessive behavior, morally complex characters, and mature romantic situations. All characters are adults unless explicitly stated otherwise in-story.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="orn2" style="margin-bottom:20px;opacity:.35"><div class="orn2-line"></div><div class="orn2-gem"></div><div class="orn2-line"></div></div>
+    <p class="f-logo">Little Anna Has An Idea</p>
+    <p class="f-copy">© 2025 · All Rights Reserved · Dark Romance Werewolf Fantasy · All heroes are 18+ and very, very dangerous</p>
+  </div>
+</footer>
+
+<script>
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.2)';cur.style.background='var(--crimson-light)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';cur.style.background='var(--gold)';});
+});
+// STARS
+const sc=document.getElementById('stars'),sctx=sc.getContext('2d');
+function rsz(){sc.width=window.innerWidth;sc.height=window.innerHeight;}rsz();window.addEventListener('resize',rsz);
+const SA=[];for(let i=0;i<300;i++)SA.push({x:Math.random()*sc.width,y:Math.random()*sc.height*.65,r:Math.random()*1.2+.2,a:Math.random()*.8+.2,t:Math.random()*Math.PI*2,s:Math.random()*.015+.005});
+(function ds(){sctx.clearRect(0,0,sc.width,sc.height);SA.forEach(s=>{s.t+=s.s;const a=s.a*(0.6+0.4*Math.sin(s.t));sctx.beginPath();sctx.arc(s.x,s.y,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(255,220,200,${a})`;sctx.fill();if(s.r>1.1){sctx.strokeStyle=`rgba(255,200,180,${a*.4})`;sctx.lineWidth=.5;sctx.beginPath();sctx.moveTo(s.x-s.r*2.5,s.y);sctx.lineTo(s.x+s.r*2.5,s.y);sctx.stroke();sctx.beginPath();sctx.moveTo(s.x,s.y-s.r*2.5);sctx.lineTo(s.x,s.y+s.r*2.5);sctx.stroke();}});requestAnimationFrame(ds);})();
+// EMBERS
+const ec=document.getElementById('embers'),ectx=ec.getContext('2d');
+function re(){ec.width=window.innerWidth;ec.height=window.innerHeight;}re();window.addEventListener('resize',re);
+class Ember{constructor(){this.reset(true);}reset(i=false){this.x=Math.random()*ec.width;this.y=i?Math.random()*ec.height:ec.height+5;this.vx=(Math.random()-.5)*.5;this.vy=-Math.random()*.7-.1;this.r=Math.random()*2+.5;this.a=Math.random()*.8+.2;this.life=0;this.max=Math.random()*350+150;this.red=Math.random()>.55;}tick(){this.x+=this.vx+Math.sin(this.life*.03)*.3;this.y+=this.vy;this.life++;if(this.life>this.max||this.y<-5)this.reset();}draw(){const p=this.life/this.max,a=this.a*Math.sin(p*Math.PI);ectx.beginPath();ectx.arc(this.x,this.y,this.r,0,Math.PI*2);ectx.fillStyle=this.red?`rgba(220,60,20,${a})`:`rgba(200,150,40,${a})`;ectx.fill();}}
+const EM=[];for(let i=0;i<100;i++){const e=new Ember();e.life=Math.random()*e.max;e.y=Math.random()*ec.height;EM.push(e);}
+(function el(){ectx.clearRect(0,0,ec.width,ec.height);EM.forEach(e=>{e.tick();e.draw();});requestAnimationFrame(el);})();
+// NAV
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+// REVEAL
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+
+// CINEMATIC MOON PHASE
+const moonLore = {
+  new:    { emoji:'🌑', name:'New Moon',   lore:'The new moon is the beginning. The silence before the mate bond snaps. Everything is about to change — you just don\'t know it yet.' },
+  waxing: { emoji:'🌒', name:'Waxing Moon', lore:'The waxing moon is hunger. It\'s the alpha circling, the heroine pretending she doesn\'t notice. The pull is getting stronger.' },
+  full:   { emoji:'🌕', name:'Full Moon',   lore:'The full moon is the claiming moon. Everything that happens under it is permanent. The wolves know this. They choose it anyway.' },
+  waning: { emoji:'🌘', name:'Waning Moon', lore:'The waning moon is aftermath. The bond is sealed. The damage is done. Neither of them would take it back if they could.' },
+};
+function getMoonPhase(){
+  const known = new Date(2000,0,6,18,14,0);
+  const now = new Date();
+  const diff = (now - known) / (1000*60*60*24);
+  const cycle = 29.53058867;
+  const phase = ((diff % cycle) + cycle) % cycle;
+  if(phase < 3.7 || phase >= 25.8) return 'new';
+  if(phase < 11.1) return 'waxing';
+  if(phase < 18.5) return 'full';
+  return 'waning';
+}
+const phase = getMoonPhase();
+const data = moonLore[phase];
+const emojiEl = document.getElementById('big-moon-emoji');
+const nameEl  = document.getElementById('big-moon-name');
+const loreEl  = document.getElementById('big-moon-lore');
+if(emojiEl) emojiEl.textContent = data.emoji;
+if(nameEl)  nameEl.textContent  = data.name;
+if(loreEl)  loreEl.textContent  = data.lore;
+// highlight active phase dot
+const phaseMap = {new:'mph-new',waxing:'mph-waxing',full:'mph-full',waning:'mph-waning'};
+const activeEl = document.getElementById(phaseMap[phase]);
+if(activeEl) activeEl.classList.add('active');
+
+// canvas — ambient particle field behind moon
+const wc=document.getElementById('wolf-canvas');
+if(wc){
+  const wx=wc.getContext('2d');
+  let ww=wc.offsetWidth||800,wh=wc.offsetHeight||500;
+  wc.width=ww;wc.height=wh;
+  window.addEventListener('resize',()=>{ww=wc.offsetWidth;wh=wc.offsetHeight;wc.width=ww;wc.height=wh;});
+  const particles=Array.from({length:60},()=>({x:Math.random()*ww,y:Math.random()*wh,r:Math.random()*1.5+.3,a:Math.random(),s:Math.random()*.004+.001}));
+  (function wloop(){
+    wx.clearRect(0,0,ww,wh);
+    particles.forEach(p=>{
+      p.a+=p.s;
+      const alpha=(.15+.15*Math.sin(p.a));
+      wx.fillStyle=`rgba(201,168,76,${alpha})`;
+      wx.beginPath();wx.arc(p.x,p.y,p.r,0,Math.PI*2);wx.fill();
+    });
+    requestAnimationFrame(wloop);
+  })();
+}
+</script>
+</body>
+</html>
